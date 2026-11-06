@@ -1,0 +1,68 @@
+# Runtime state -- never commit these. config/secret.key is the key that reads
+# the database; config/config.yaml is this deployment's settings. The bare
+# names also catch a stray copy anywhere else.
+config.yaml
+secret.key
+# A key rotation's new key, and every key it has retired.
+secret.key.*
+config.yaml.bak
+.config.yaml.*.tmp
+data/
+*.db
+.claude/
+# Compiled output. Built by the Dockerfile, scripts/build.sh, or `go build`.
+#
+# The trailing negations matter: a bare "/server" also matches the server/
+# source directory, which silently keeps the entire backend out of the
+# repository. Ignore the binaries, then put the directories back.
+/server
+!/server/
+/manage
+!/manage/
+/ipb
+/ipb.exe
+dist/
+
+# Go tooling: test binaries, coverage profiles, profiler output, go.work.
+*.test
+*.out
+coverage.html
+*.prof
+go.work
+go.work.sum
+
+# scripts/run.sh's pid file, scripts/run.bat's staged build, and the log of
+# the background server scripts/login.sh --background starts.
+.run/
+
+# Logs and stray temp files.
+*.log
+*.tmp
+*.bak
+
+# Secrets that must never be committed, wherever they turn up.
+.env
+.env.*
+*.pem
+*.key
+
+# OS clutter, in any directory.
+.DS_Store
+._*
+.AppleDouble
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editors and IDEs.
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.#*
+\#*\#
+*.sublime-workspace

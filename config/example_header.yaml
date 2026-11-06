@@ -1,0 +1,20 @@
+# ===========================================================================
+# config.example.yaml -- every setting with its default. Safe to commit: no
+# setting is a secret. config.yaml itself is gitignored, so a fresh clone
+# starts from this file.
+#
+# To use it:
+#
+#   cp config/config.example.yaml config/config.yaml
+#   chmod 600 config/config.yaml
+#
+# There is no key to fill in: the secret key lives in config/secret.key, which
+# the server writes on its first start (as long as there is no database yet).
+# Or skip the copy: `ipb config init` (or `go run . config init`)
+# writes config/config.yaml and config/secret.key in one go. scripts/run.sh
+# and docker/run.sh do that for you on their first run.
+#
+# This file is generated from config/defaults.yaml. After changing a default
+# there, regenerate it with `go run . config example`.
+# ===========================================================================
+

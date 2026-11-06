@@ -1,0 +1,4 @@
+# A private app: nothing here belongs in a search engine. This also keeps
+# polite crawlers from fetching a login link that ends up somewhere public.
+User-agent: *
+Disallow: /

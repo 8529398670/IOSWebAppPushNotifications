@@ -1,0 +1,9 @@
+# Written by the skill that scaffolded this app; `webserver-upgrade` reads and
+# updates it. Commit it: it is how an update knows where this app started.
+skill: go-webserver
+commit: b286bc2812099ed13c59ff49416e3468de4a0c2f
+project_name: "iPB"
+slug: ipb
+module_path: ipb
+port: 26075
+features: [invite_links, two_factor, backups]

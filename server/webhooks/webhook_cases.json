@@ -1,0 +1,148 @@
+{
+  "_about": "Shared by both templates: each one's tests read its own copy, so the two cannot drift apart. Keep the copies byte-identical.",
+  "signatures": [
+    {
+      "secret": "whsec_test",
+      "timestamp": 1700000000,
+      "body": "{\"id\":\"abc\",\"event\":\"user.created\"}",
+      "header": "t=1700000000,v1=852b1888605559f6018afd1129b0f5c3a1d865cfa067d42f4fe591a3a0e03f6b"
+    },
+    {
+      "secret": "whsec_other",
+      "timestamp": 1,
+      "body": "",
+      "header": "t=1,v1=f227cc4cc215687ecb7f22ead5edf46a38b1c9033aab101bfdc4484216f6536c"
+    },
+    {
+      "secret": "whsec_unicode",
+      "timestamp": 1893456000,
+      "body": "{\"name\":\"Zoë ☕\"}",
+      "header": "t=1893456000,v1=e526301612b1931d2b2b6db4e73446e1cb8a2ef28af1b2d888730870736bffe7"
+    }
+  ],
+  "blocked": [
+    "0.0.0.0",
+    "10.1.2.3",
+    "100.64.0.1",
+    "127.0.0.1",
+    "169.254.169.254",
+    "172.16.0.1",
+    "172.31.255.255",
+    "192.0.2.1",
+    "192.168.1.1",
+    "198.18.0.1",
+    "198.51.100.7",
+    "203.0.113.7",
+    "224.0.0.1",
+    "240.0.0.1",
+    "255.255.255.255",
+    "::",
+    "::1",
+    "::ffff:10.0.0.1",
+    "::ffff:127.0.0.1",
+    "64:ff9b::a00:1",
+    "2001:db8::1",
+    "2002:a00:1::",
+    "fc00::1",
+    "fd12:3456::1",
+    "fe80::1",
+    "ff02::1"
+  ],
+  "allowed": [
+    "1.1.1.1",
+    "8.8.8.8",
+    "93.184.216.34",
+    "172.32.0.1",
+    "192.169.0.1",
+    "100.128.0.1",
+    "2606:4700:4700::1111",
+    "::ffff:8.8.8.8"
+  ],
+  "urls": [
+    {
+      "url": "https://hooks.example.com/in",
+      "allow_private": false,
+      "ok": true
+    },
+    {
+      "url": "https://hooks.example.com:8443/in?token=abc",
+      "allow_private": false,
+      "ok": true
+    },
+    {
+      "url": "http://hooks.example.com/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "ftp://hooks.example.com/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://user:pass@hooks.example.com/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https:///in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "not a url",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://localhost/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://LOCALHOST/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://app.localhost/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://127.0.0.1/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://[::1]/in",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://169.254.169.254/latest/meta-data",
+      "allow_private": false,
+      "ok": false
+    },
+    {
+      "url": "https://8.8.8.8/in",
+      "allow_private": false,
+      "ok": true
+    },
+    {
+      "url": "http://127.0.0.1:9000/in",
+      "allow_private": true,
+      "ok": true
+    },
+    {
+      "url": "http://localhost:9000/in",
+      "allow_private": true,
+      "ok": true
+    },
+    {
+      "url": "ftp://127.0.0.1/in",
+      "allow_private": true,
+      "ok": false
+    }
+  ]
+}

@@ -1,0 +1,324 @@
+# ===========================================================================
+# config.example.yaml -- every setting with its default. Safe to commit: no
+# setting is a secret. config.yaml itself is gitignored, so a fresh clone
+# starts from this file.
+#
+# To use it:
+#
+#   cp config/config.example.yaml config/config.yaml
+#   chmod 600 config/config.yaml
+#
+# There is no key to fill in: the secret key lives in config/secret.key, which
+# the server writes on its first start (as long as there is no database yet).
+# Or skip the copy: `ipb config init` (or `go run . config init`)
+# writes config/config.yaml and config/secret.key in one go. scripts/run.sh
+# and docker/run.sh do that for you on their first run.
+#
+# This file is generated from config/defaults.yaml. After changing a default
+# there, regenerate it with `go run . config example`.
+# ===========================================================================
+
+# iPB -- the one configuration file.
+#
+# Everything is configured here: the server, the Docker container, and the
+# portable build. Nothing reads environment variables. Every key is optional;
+# a key you leave out takes the value shown in this file.
+#
+# It holds no secret. The secret key is in secret.key, beside this file: 64
+# hex characters, mode 0600, never committed (.gitignore), never baked into an
+# image (.dockerignore). Back the two up together with the app directory.
+#
+# It can be changed while the server runs -- by hand, or from the owner's
+# Settings screen, which edits only the values it changes and leaves every
+# comment where it is. The server checks this file every two seconds; an
+# edit that does not validate is reported and ignored, and the server keeps
+# running on the last good version. Each key is tagged:
+#
+#   [live]      takes effect within seconds of saving
+#   [restart]   saved now, takes effect when the server restarts
+#   [scripts]   read by docker/run.sh or scripts/build.sh, not the server
+#
+# Where it is read from, first match wins:
+#
+#   ./config/config.yaml               a source checkout; also what every
+#                                      script in scripts/ and docker/ reads
+#   ~/.config/ipb/config.yaml   a portable binary run anywhere else
+#
+# If neither exists the server writes the second one, and a secret.key beside
+# it, on first run. `ipb config init` writes both into ./config/
+# the same way, and `ipb config check` validates whichever is in use.
+#
+# Relative paths resolve against the project directory: the folder that holds
+# config/ (in a checkout, and /app in the container), or the folder holding
+# this file when it is not in a config/ folder (~/.config/ipb/).
+#
+# An unknown key is an error, not a silently ignored typo.
+
+app:
+  # Shown in the page title and the startup log. [restart]
+  name: "iPB"
+
+server:
+  # 127.0.0.1 answers only this machine, which is what a development run and
+  # a server behind a reverse proxy on the same host both want. Use 0.0.0.0
+  # to listen on every interface -- and then put TLS in front, because login
+  # links, cookies, and API keys all cross the wire. Ignored inside the
+  # container, which always listens on 0.0.0.0 (what is reachable from
+  # outside is docker.bind_address). [restart]
+  host: 127.0.0.1
+  # scaffold.py replaces 8080 with a random free port, different per project,
+  # so several projects can run on this machine at once. [restart]
+  port: 26075
+
+  # The address people open this at, e.g. https://app.example.com -- just the
+  # origin, no path. Login, invite and API-key links are printed with it.
+  # Empty means the links use http://host:port above (inside the container,
+  # docker.bind_address:docker.host_port), which is right on this machine
+  # and wrong behind a reverse proxy: the server cannot see what is in front.
+  # [live]
+  public_url: ""
+
+  # Where the database, the control socket and app storage live. Empty means
+  # ~/.config/ipb/. Ignored inside the container, which always
+  # uses /app/data (mounted from docker.data_dir) and keeps the socket on its
+  # tmpfs. [restart]
+  app_dir: ""
+
+  # Checked on disk first, embedded copy otherwise. Empty language_file means
+  # <app_dir>/language.yaml if it exists, else language.yaml beside this file
+  # (config/language.yaml in a checkout). [restart]
+  static_dir: ./static
+  language_file: ""
+
+  # Encrypt every database value and every activity-log line with the key in
+  # secret.key. Session cookies are always encrypted with it. [restart]
+  encrypt_at_rest: true
+
+  # false ONLY for plain http://localhost. A Secure cookie is silently dropped
+  # over http, so login appears to succeed and then does nothing. Also turns
+  # HSTS on. [live]
+  secure_cookies: true
+  # Named per project: browsers share cookies across every port on a host,
+  # so two local projects both using "session" would log each other out.
+  # Changing it signs everyone out. [restart]
+  cookie_name: ipb_session
+
+  # Turn on when a reverse proxy you control is in front (the Docker setup
+  # assumes one), so the rate limiter sees each visitor's address instead of
+  # the proxy's. proxy_header is then believed only on connections from an
+  # address in trusted_proxies -- the address your proxy connects *from*, as
+  # this server sees it -- and read right to left, skipping trusted hops, so
+  # whatever a client wrote further left is ignored. trust_proxy without
+  # trusted_proxies is refused.
+  #
+  #   proxy on the same host, bare binary:  [127.0.0.1, "::1"]
+  #   proxy on the host, app in Docker:     [172.16.0.0/12] (the bridge
+  #                                         gateway; check with
+  #                                         `docker network inspect bridge`)
+  #
+  # This only holds if clients cannot reach this server except through the
+  # proxy. With a single-value header (X-Real-IP, CF-Connecting-IP) the proxy
+  # must also overwrite whatever the client sent rather than pass it on.
+  # [restart]
+  trust_proxy: false
+  trusted_proxies: []
+  proxy_header: X-Forwarded-For
+
+  # The largest request body accepted, and how many requests one address may
+  # make per window before getting 429s. Files the page loads (/js, /css,
+  # /vendor, images) do not count: index.html alone pulls in over twenty.
+  body_limit_bytes: 1048576        # 1 MiB [restart]
+  rate_limit_max: 120              # [live]
+  rate_limit_window_seconds: 60    # [live]
+
+  # Signing in and joining through an invite link have their own budget, out
+  # of the same window. Everyone behind one office network shares an address,
+  # and each person joining makes several of these calls, so raise this before
+  # handing an invite link to a large group in one room. [live]
+  rate_limit_signin_max: 60
+
+  # One piece of an upload counts against this budget instead, out of the same
+  # window. A piece is 768 KiB, so 1200 is about 900 MB a minute per address.
+  # [live]
+  rate_limit_upload_max: 1200
+  # Sends on the notification API per address per window, its own budget so a
+  # busy script cannot lock the app's pages out.
+  rate_limit_send_max: 600         # [live]
+
+  # Lets `manage` and other processes reach the database through the running
+  # server, over a unix socket in the app directory, or on the tmpfs inside
+  # the container (bolt allows only one process to open the file). Off means `manage` needs the server stopped.
+  # [restart]
+  control_socket: true
+
+  # POST /mcp: the Model Context Protocol, so an agent (Claude Code, any MCP
+  # client that can send a header) can use this app with an API key, at that
+  # key's role. Only keys are accepted there, never a browser session. Needs
+  # auth.api_keys; false makes /mcp answer 404. [live]
+  mcp: false
+
+  # Maintenance mode. none is normal running. read_only keeps the app readable
+  # and refuses every write; full refuses everything. Either way the owner's
+  # browser session still works, signing in still works (scripts/login.sh gets
+  # the owner in), and /api/health, /api/ready and /metrics keep answering.
+  # Everyone else gets a 503 with Retry-After. Background jobs keep running.
+  # [live]
+  maintenance: none
+
+  # One line at the top of every signed-in page: planned downtime, say. Empty
+  # shows nothing. Anyone can dismiss it, and a changed message comes back.
+  # [live]
+  announcement: ""
+
+# How long a sign-in lasts, and a login link stays usable. [live]
+# A sign-in that is in use extends itself: session_ttl_seconds counts from the
+# last time it was used, so only an idle one ends then. session_max_age_seconds
+# is the limit on that, counted from signing in, so a stolen cookie cannot be
+# kept alive forever. Set the two equal for a fixed lifetime.
+auth:
+  session_ttl_seconds: 7776000     # 90 days: a phone can go months unopened
+  session_max_age_seconds: 31536000 # 1 year
+  login_token_ttl_seconds: 1800    # 30 minutes
+
+  # API keys let a script, a cron job, or another service call the API at the
+  # role of the account that owns them, never higher. false closes the surface
+  # completely: the Authorization header stops being believed, existing keys
+  # stop working (the rows survive), and the endpoints that mint keys 404.
+  # [live]
+  api_keys: false
+
+  # Lifetime of a new key when the request does not say. A key that never
+  # expires has to be asked for (expires_in_days: 0, or `-days 0`). [live]
+  api_key_ttl_seconds: 7776000     # 90 days
+
+  # Password sign-in. true lets any account set a username and password on
+  # its own screen, after signing in with a link -- there is still no signup,
+  # and a forgotten password is still "get a new login link". The owner can
+  # block one account from the Users screen. false stops every password
+  # working and hides the form; the hashes stay, so switching it back on
+  # restores them. Needs HTTPS (or localhost), because the browser hashes the
+  # password with WebCrypto before sending it. [live]
+  passwords: false
+
+  # Two-factor sign-in with an authenticator app, which each person turns on
+  # for themselves. It is asked for on every browser sign-in -- password,
+  # login link, and invite link -- never for an API key. false stops offering
+  # it and stops asking for it; the secrets stay, so switching it back on
+  # restores them. [live]
+  two_factor: true
+
+  # Invite links: one link a whole group can join through, and the PINs that
+  # guard a name on it. false hides the Invite links and PIN screens and makes
+  # /join and every invite route answer 404, so a link already handed out stops
+  # working, and someone who only ever signed in through one needs a login link
+  # meanwhile. The links and PINs stay, so switching it back on restores them.
+  # [live]
+  invite_links: true
+
+# The activity log: every request, every sign-in and admin action, and what
+# people do on the page (see static/js/track.js). Only the owner can read it,
+# on the Logs screen. It is written as one file per UTC day under
+# <app_dir>/logs/, each line encrypted when server.encrypt_at_rest is on.
+# Login links, keys, PINs and anything typed are never written. [live]
+logs:
+  enabled: true                    # [restart]
+  retention_days: 30               # days older than this are deleted
+  max_total_mb: 500                # past this the oldest days are recycled, never today
+  max_file_mb: 50                  # a day past this continues in a new part file
+  compress_after_days: 1           # finished days older than this are gzipped; 0 = never
+  static_assets: false             # also log requests for /js, /css, /vendor files
+  ui_clicks: true                  # log every click; screen changes, submits and errors always are
+  echo: true                       # print a one-line summary of each request to stdout
+
+# Scheduled backups, written to <app_dir>/backups by the hourly job. They are
+# the same files `manage backup` makes: the database, config.yaml and storage/,
+# but never secret.key and never the activity log. The disk that holds the
+# data also holds these, so copy them somewhere else too. Only scheduled
+# backups are removed once there are more than keep; ones you make by hand
+# stay until you delete them. [live]
+backups:
+  enabled: true                    # [live]
+  interval_hours: 24               # [live]
+  keep: 7                          # [live]
+
+# GET /metrics: request counts, timings and job results in Prometheus's text
+# format. An admin API key reads it, sent as a bearer token, so it needs
+# auth.api_keys. false makes /metrics answer 404.
+metrics:
+  enabled: false                   # [live]
+
+# Events sent to the endpoints on the owner's Webhooks screen.
+webhooks:
+  # false hides the screen, makes its routes answer 404, queues no new events
+  # and sends nothing. Endpoints and deliveries already queued stay, so
+  # switching it back on picks up where it stopped.
+  enabled: false                   # [live]
+  # How long one delivery attempt may take, 1 to 60.
+  timeout_seconds: 10              # [live]
+  # Lets an endpoint be on this machine or a private network, and use plain
+  # http. Off, nothing on the Webhooks screen can reach anything internal.
+  # Only turn this on if whoever is the owner should have that reach.
+  allow_private_targets: false     # [live]
+
+# How notifications reach phones.
+push:
+  # Who push services can contact about this server: a mailto: address or an
+  # https:// URL. Empty uses server.public_url, which must then be a real
+  # https address, because Apple refuses a localhost subject.
+  vapid_subject: ""                # [live]
+  # How long messages stay in people's inboxes, in days.
+  inbox_days: 30                   # [live]
+
+# The Files screen and /api/files. Files are always encrypted on disk, whatever
+# encrypt_at_rest says.
+files:
+  # false hides the screen and makes every /api/files route answer 404. Files
+  # already uploaded stay on disk.
+  enabled: false                   # [live]
+  # The largest single file, in bytes. 104857600 is 100 MiB.
+  max_file_bytes: 104857600        # [live]
+  # How much one account may keep, in bytes, counting uploads still arriving.
+  # 1073741824 is 1 GiB.
+  quota_bytes_per_user: 1073741824 # [live]
+  # An upload that has had nothing new for this long is removed.
+  abandoned_upload_hours: 24       # [live]
+
+# [scripts] Read by docker/run.sh, which applies a change the next time it
+# runs. Edit these on the host: inside the container they are read-only.
+docker:
+  image: ipb
+  container: ipb
+
+  # The host side of the published port. 127.0.0.1 keeps it reachable only
+  # from this machine -- put nginx/Caddy/Traefik in front for TLS. The
+  # container side is server.port.
+  bind_address: 127.0.0.1
+  host_port: 26075
+
+  # Host directory mounted at /app/data: the database and app storage. This
+  # file and secret.key are mounted separately (secret.key read-only), so a
+  # backup of data_dir alone does not carry the key.
+  data_dir: ./data
+
+  restart: unless-stopped          # no | always | unless-stopped | on-failure[:N]
+
+  # Blast-radius limits. Raise them deliberately for real load.
+  memory: 256m
+  cpus: "1"
+  pids_limit: 128
+  tmpfs_size: 16m                  # the only writable path besides data_dir
+
+# [scripts] Read by scripts/build.sh.
+build:
+  binary_name: ipb
+  output_dir: dist
+
+  # `scripts/build.sh <os/arch> ...` overrides this list for one run.
+  targets:
+    - darwin/amd64
+    - darwin/arm64
+    - linux/amd64
+    - linux/arm64
+    - linux/arm
+    - windows/amd64
+    - windows/arm64

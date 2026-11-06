@@ -1,0 +1,719 @@
+# Every piece of text the UI can show lives here, and nowhere else.
+#
+# Two rules make this useful rather than just indirection:
+#
+#   1. Translating or rewording the app is an edit to this file plus a
+#      restart. No HTML or JS changes, no rebuild.
+#   2. A key that is missing or empty ("") hides its element entirely. That
+#      is how you turn a label, a button, or a whole section off without
+#      touching the markup -- set it to "" and it disappears rather than
+#      rendering blank or showing a raw key name.
+#
+# This file is served to any visitor at /api/language, signed in or not, since
+# the signed-out page needs text too. Never put anything secret in it.
+
+app:
+  title: "iPB"
+  tagline: "Sign in with a one-time link."
+
+# The sidebar, one entry per signed-in screen. menu labels the header's
+# button that opens/collapses it.
+nav:
+  menu: "Menu"
+  close: "Close"
+  skip: "Skip to content"
+  theme_toggle: "Switch between light and dark"
+  # The browser tab, per screen. {screen} is the screen's heading.
+  page_title: "{screen} · {app}"
+  # Foot of the sidebar, for admins.
+  version: "Version {version}"
+  inbox: "Inbox"
+  apps: "Apps"
+  groups: "Groups"
+  notifications: "Notifications"
+  account: "Account"
+  appearance: "Appearance"
+  pin: "PIN"
+  password: "Password"
+  two_factor: "Two-factor"
+  api_keys: "API keys"
+  files: "Files"
+  admin_heading: "Admin"
+  users: "Users"
+  invite_links: "Invite links"
+  all_keys: "All API keys"
+  logs: "Logs"
+  jobs: "Jobs"
+  webhooks: "Webhooks"
+  settings: "Settings"
+
+# Short confirmations shown as a toast at the bottom of the screen.
+ui:
+  saved: "Saved."
+  copied: "Copied."
+  # Where the browser refuses to copy (plain http), the text is selected instead.
+  copy_hint: "Selected. Press Ctrl+C, or Cmd+C on a Mac, to copy."
+  load_more: "Load more"
+  loading: "Loading"
+  cancel: "Cancel"
+  save: "Save"
+  # The name a screen reader gives a value that edits in place, and its tooltip.
+  # {label} says what it is, {value} what it holds now.
+  edit: "Edit {label}: {value}"
+  confirm: "Yes, go ahead"
+  qr_button: "QR code"
+  qr_label: "QR code for the link above"
+  show_password: "Show password"
+
+# Coming back to a tab that was left open (static/js/fresh.js).
+fresh:
+  new_version: "A new version is available."
+  reload: "Reload"
+
+# Ctrl+Z / Ctrl+Y (static/js/undo.js). The toast reads "<undone> <label>",
+# e.g. "Undone: theme change", with a Redo button. Actions that announce
+# themselves ("Name changed · Undo") use the label alone, capitalised, so a
+# label is a phrase that reads after "Undone:". "nothing" is shown when there
+# is nothing left to undo or redo; it is empty, so that toast is off. Empty
+# button keys drop the button and keep the toast.
+undo:
+  rename_app: "app renamed"
+  mute_app: "app muted"
+  unmute_app: "app unmuted"
+  delete_app: "app deleted"
+  delete_group: "group deleted"
+  delete_message: "message deleted"
+  undone: "Undone:"
+  redone: "Redone:"
+  nothing: ""
+  failed: "That could not be undone."
+  conflict: "It was changed somewhere else in the meantime, so it was left as it is."
+  button: "Undo"
+  redo_button: "Redo"
+  theme: "theme change"
+  sidebar: "sidebar"
+  rename: "name changed"
+  rename_key: "API key name changed"
+  rename_invite: "invite link label changed"
+  rename_webhook: "webhook name changed"
+  rename_file: "file name changed"
+  edit_webhook: "webhook changed"
+  deleted_key: "API key deleted"
+  deleted_invite: "invite link deleted"
+  deleted_webhook: "webhook deleted"
+  deleted_file: "file deleted"
+  settings: "settings change"
+
+# The Appearance card. Light is always the default; a pick is remembered in
+# this browser only. Names for the presets in static/js/theme.js.
+theme:
+  heading: "Appearance"
+  description: "Pick how this app looks in this browser."
+  preset_light: "Light"
+  preset_dark: "Dark"
+  preset_ocean: "Ocean"
+  preset_forest: "Forest"
+  preset_sepia: "Sepia"
+  preset_grape: "Grape"
+  preset_pink: "Pink"
+  preset_wsu: "WSU"
+  preset_midnight: "Midnight"
+  preset_slate: "Slate"
+  preset_dark_pink: "Dark pink"
+  preset_wsu_dark: "WSU dark"
+
+signed_out:
+  paste_label: "Have a sign-in link? Paste it here."
+  paste_button: "Go"
+  paste_invalid: "That does not look like a sign-in link."
+  heading: "You are not signed in"
+  body: "There is no signup form here on purpose. Ask an admin for a one-time login link, or for your group's invite link."
+  invalid_link: "That login link is invalid, expired, or has already been used. Ask for a new one."
+  sign_in_expired: "That sign-in took too long and has expired. Start again."
+  session_ended: "You have been signed out. Your session ended, or it was signed out from another device."
+  password_heading: "Sign in with a password"
+  username_label: "Username"
+  password_label: "Password"
+  password_button: "Sign in"
+
+login_confirm:
+  heading: "Sign in"
+  body: "This is a one-time login link. It stops working once you use it."
+  # {name} is replaced with the account currently signed in.
+  switch_warning: "You are signed in as {name}. Continuing signs you out of that account and into the one this link is for."
+  button: "Sign in"
+
+# What an invite link opens (/join/...). Nothing is created until a button
+# is pressed. {label} is the link's label, {name} the name typed or picked.
+join:
+  heading: "Join {label}"
+  body: "Type your name. If you have joined through this link before, type the same name to sign back in on this device."
+  name_label: "Your name"
+  name_placeholder: "Your name"
+  continue_button: "Continue"
+  did_you_mean: "Is one of these you?"
+  no_match: "Nobody with a name like that has joined through this link yet."
+  this_is_me: "That's me"
+  has_pin: "PIN"
+  create_new: "No, I'm new -- join as {name}"
+  create_first: "Join as {name}"
+  full: "This link has no places left. You can still sign back in if you joined through it before."
+  back_button: "Back"
+  pin_prompt: "Enter the PIN for {name}."
+  pin_label: "PIN"
+  pin_button: "Sign in"
+  switch_warning: "You are signed in as {name}. Continuing signs you out of that account."
+  invalid_heading: "This link is not working"
+  invalid: "This invite link is invalid, expired, or has been switched off. Ask whoever shared it for a new one."
+
+account:
+  heading: "Account"
+  display_name_label: "Display name"
+  display_name_placeholder: "Your name"
+  save_button: "Save"
+  logout_button: "Log out"
+  device_heading: "Sign in on another device"
+  device_description: "Make a one-time login link for your own account and open it on your phone or another computer. Making a new one cancels any earlier link you have not used yet; devices already signed in stay signed in."
+  device_button: "Make a login link"
+  device_link_notice: "Open this on the other device. It works once."
+  copy_button: "Copy"
+
+# Where this account is signed in, on the Account screen (static/js/sessions.js).
+sessions:
+  empty: "No other devices."
+  user_empty: "Not signed in anywhere."
+  user_heading: "Where {name} is signed in"
+  heading: "Where you're signed in"
+  description: "Every device with this account open. If you don't recognise one, sign it out and change how you sign in."
+  table_device: "Device"
+  table_ip: "Address"
+  table_seen: "Last active"
+  table_signed_in: "Signed in"
+  table_actions: "Actions"
+  this_device: "This device"
+  # {browser} and {system} are worked out from what the device said it was.
+  device_name: "{browser} on {system}"
+  unknown_device: "Unknown device"
+  unknown: "Unknown"
+  revoke_button: "Sign out"
+  # Empty this string to stop asking for confirmation.
+  revoke_confirm: "Sign this device out? It will need a new way in."
+  revoke_others_button: "Sign out all other devices"
+  # Empty this string to stop asking for confirmation.
+  revoke_others_confirm: "Sign out every device but this one? They will need a new way in."
+
+# The password panel, shown while the owner has auth.passwords on.
+password:
+  heading: "Password"
+  description: "Sign in with a username and password as well as a login link. If you forget it, sign in with a new login link and set another. Setting one signs you out everywhere else."
+  status_set: "Password set"
+  status_none: "No password"
+  username_label: "Username"
+  username_help: "3 to 32 letters, digits, dots, dashes or underscores. Changing it means entering your password again."
+  new_label: "New password"
+  new_help: "At least 12 characters."
+  confirm_label: "Type it again"
+  save_button: "Save"
+  remove_button: "Remove password"
+  remove_confirm: "Remove your password? You will sign in with login links only."
+
+# The two-factor panel, and the step every sign-in shows on an account with
+# it on.
+two_factor:
+  copy_secret_button: "Copy"
+  download_button: "Download"
+  recovery_filename: "recovery-codes.txt"
+  heading: "Two-factor sign-in"
+  description: "Ask for a code from an authenticator app every time you sign in in a browser, whichever way you sign in. API keys are not affected."
+  status_on: "On"
+  status_off: "Off"
+  start_button: "Set up"
+  setup_scan: "Scan this with your authenticator app."
+  setup_manual: "Or enter this key by hand:"
+  setup_code_label: "The 6-digit code it shows"
+  confirm_button: "Turn on"
+  recovery_notice: "Save these recovery codes somewhere safe. Each one works once, in place of a code, if you lose your phone. They are shown only now."
+  copy_button: "Copy"
+  done_button: "Done"
+  disable_button: "Turn off"
+  code_label: "Code from your app, or a recovery code"
+  step_heading: "Enter your code"
+  step_body: "This account has two-factor sign-in on. Enter the code from your authenticator app, or a recovery code."
+  step_button: "Sign in"
+
+admin:
+  empty: "No one to show."
+  search_label: "Search by name or username"
+  sessions_button: "Sessions"
+  heading: "Admin"
+  description: "Create an account by minting a login link. Send the link to the person; it works once."
+  new_name_label: "Name"
+  new_name_placeholder: "Their name"
+  new_role_label: "Role"
+  role_user: "user"
+  role_admin: "admin"
+  create_button: "Create login link"
+  link_notice: "Send this one-time link. It is shown once and cannot be recovered, and any earlier unused link for this person has stopped working."
+  copy_button: "Copy"
+  table_name: "Name"
+  table_role: "Role"
+  table_status: "Status"
+  table_actions: "Actions"
+  status_active: "active"
+  status_disabled: "disabled"
+  reissue_button: "New link"
+  revoke_button: "Revoke access"
+  # {name} is replaced with the account's display name.
+  revoke_confirm: "End every session, unused login link and API key that {name} has? The account stays enabled; send them a new link to let them back in."
+  block_password_button: "Block password"
+  allow_password_button: "Allow password"
+  reset_two_factor_button: "Reset 2FA"
+  # {name} is replaced with the account's display name.
+  reset_two_factor_confirm: "Turn off two-factor sign-in for {name}? Do this only if you are sure it is them asking."
+  make_admin_button: "Make admin"
+  make_user_button: "Make user"
+  make_admin_confirm: "Make {name} an admin? They can then manage accounts. This signs them out everywhere and stops their unused login links, so send them a new link. They can no longer sign in through an invite link."
+  make_user_confirm: "Take admin rights from {name}? It applies at once. Their admin API keys drop to user level, and invite links they made stop working until they are an admin again."
+  role_changed_toast: "{name} is now: {role}"
+  disable_button: "Disable"
+  # {name} is replaced with the account's display name. Empty this string to
+  # stop asking for confirmation before disabling.
+  disable_confirm: "Disable {name}? They are signed out everywhere, unused login links stop working, and their API keys stop until the account is enabled again."
+  # Shown once it is done. {name} as above. Empty either to switch it off.
+  disabled_toast: "{name} disabled"
+  enabled_toast: "{name} enabled. They may need a new link to sign in."
+  enable_button: "Enable"
+  delete_button: "Delete"
+  # Empty this string to stop asking for confirmation before deleting.
+  delete_confirm: "Permanently delete {name}? Their sessions, login links and API keys go with the account, and it cannot be undone. Disable the account instead if they might come back."
+  # Shown after the role of the one owner account, e.g. "admin (owner)".
+  owner_label: "owner"
+
+api_keys:
+  empty: "No API keys yet."
+  all_empty: "No one has an API key yet."
+  heading: "API keys"
+  description: "For scripts, cron jobs, and other services. A key does exactly what your account can do -- send it as an Authorization: Bearer header. It is shown once."
+  name_label: "What is it for"
+  name_placeholder: "Bot-1"
+  role_label: "Permission"
+  role_user: "user"
+  role_admin: "admin (can manage accounts)"
+  days_label: "Expires in (days)"
+  days_placeholder: "leave blank for the default, 0 for never"
+  create_button: "Create key"
+  secret_notice: "Copy this now. It is shown once and cannot be recovered -- if you lose it, revoke the key and create another."
+  copy_button: "Copy"
+  table_name: "Name"
+  table_role: "Permission"
+  table_status: "Status"
+  table_last_used: "Last used"
+  table_expires: "Expires"
+  table_actions: "Actions"
+  status_active: "active"
+  status_revoked: "revoked"
+  status_expired: "expired"
+  never: "never"
+  # Empty expiry_button to take the button away.
+  expiry_button: "Expiry"
+  # {name} is the key's name.
+  expiry_heading: "Change when {name} expires"
+  expiry_help: "Counted from today. 0 means it never expires."
+  expiry_changed: "Expiry changed."
+  revoke_button: "Revoke"
+  # Empty this string to stop asking for confirmation before revoking.
+  revoke_confirm: "Revoke this key? Anything using it stops working immediately."
+  delete_button: "Delete"
+  # Empty this string to stop asking for confirmation before deleting.
+  # Under a key an admin made for someone else. {name} is that admin.
+  created_by: "Created by {name}"
+
+# The Files screen (static/js/files.js). {name} is the file's name, {percent} how
+# much has gone up, and {count} a number.
+files:
+  heading: "Files"
+  description: "Stored encrypted. Only you and the admins of this app can open them."
+  upload_label: "Upload files"
+  drop_hint: "Or drop files anywhere on this screen."
+  usage: "{used} of {quota} used"
+  # Under the everyone's files switch. _disk is when the system says what's left.
+  usage_all: "{used} stored across every account."
+  usage_all_disk: "{used} stored across every account, {free} free on disk."
+  # {names} is who failed, {reason} why the last of them did.
+  failed_list: "Not uploaded: {names}. {reason}"
+  uploading: "Uploading {name}: {percent}%"
+  everyone_label: "Show everyone's files"
+  table_name: "Name"
+  table_owner: "Owner"
+  table_size: "Size"
+  table_uploaded: "Uploaded"
+  table_actions: "Actions"
+  empty: "No files yet."
+  download_button: "Download"
+  delete_button: "Delete"
+  size_b: "{count} B"
+  size_kb: "{count} KB"
+  size_mb: "{count} MB"
+  size_gb: "{count} GB"
+
+# Only offered to non-admin accounts: an admin can never be signed in to
+# through an invite link, so a PIN would protect nothing.
+pin:
+  heading: "PIN"
+  description: "If you joined through an invite link, anyone else holding that link could pick your name and sign in as you. Set a PIN and it will be asked for. Nothing else uses it."
+  status_set: "A PIN is set."
+  status_none: "No PIN is set."
+  label: "New PIN"
+  placeholder: "4 to 8 digits"
+  save_button: "Set PIN"
+  clear_button: "Remove PIN"
+
+invite_links:
+  empty: "No invite links yet."
+  heading: "Invite links"
+  description: "One link for a group: post it in a group chat and each person who opens it joins as a new user, until the places run out. People who joined through it can sign back in on a new device with the same link."
+  label_label: "What is it for"
+  label_placeholder: "Group-1"
+  uses_label: "Places"
+  days_label: "Works for (days)"
+  create_button: "Create invite link"
+  link_notice: "Share this link with the group. It is shown once and cannot be recovered. Anyone holding it can join, so switch it off below if it goes somewhere it should not."
+  copy_button: "Copy"
+  table_label: "Link"
+  table_joined: "Joined"
+  table_status: "Status"
+  table_expires: "Expires"
+  table_actions: "Actions"
+  # {used} and {max} are numbers.
+  joined_of: "{used} of {max}"
+  status_live: "live"
+  status_full: "full"
+  status_expired: "expired"
+  status_revoked: "switched off"
+  # The admin who made it was disabled, deleted, or is no longer an admin.
+  status_orphaned: "maker no longer an admin"
+  edit_button: "Edit"
+  # {label} is the link's label.
+  edit_heading: "Edit {label}"
+  edit_days_help: "Counted from today. Leave blank to keep the current expiry."
+  edited: "Invite link changed."
+  switch_on_button: "Switch on"
+  # Empty this string to stop asking for confirmation.
+  switch_on_confirm: "Switch this link back on? The same link works again for anyone who has it, until it expires or its places run out."
+  switched_on: "Invite link switched back on."
+  revoke_button: "Switch off"
+  # Empty this string to stop asking for confirmation.
+  revoke_confirm: "Switch off this link? Nobody can join or sign back in through it any more. Accounts it made keep working."
+  delete_button: "Delete"
+  # Empty this string to stop asking for confirmation.
+
+admin_keys:
+  heading: "All API keys"
+  description: "Every key in this app and who owns it. Revoke or delete one to cut off whatever is using it, right away."
+  table_owner: "Owner"
+  create_heading: "Create a key for someone"
+  create_description: "The key acts as that person, at no more than their permission, and they can see that you made it."
+  user_label: "Account"
+
+# The Logs screen (owner only; static/js/logs.js). Placeholders in {braces}
+# are filled in by the page. Days are UTC dates; times are the viewer's own.
+# kind_* label both the filter buttons and each row's badge.
+logs:
+  heading: "Logs"
+  description: "Everything this app has recorded: every request, every sign-in and admin action, and what people did on the page. Only you, the owner, can see this. Typed values, passwords and links are never recorded."
+  search_label: "Search"
+  search_placeholder: "Search, e.g. status:5xx user:ana -kind:request"
+  search_help: "Words match anywhere. Narrow with kind: user: status: path: ip: level: action: — commas mean or (kind:auth,admin), a leading minus excludes."
+  kinds_label: "Show only"
+  kind_request: "Request"
+  kind_ui: "Page"
+  kind_auth: "Sign-in"
+  kind_admin: "Admin"
+  kind_error: "Error"
+  kind_system: "System"
+  live_button: "Live"
+  live_lost: "Live updates stopped. Press Live to try again."
+  prune_button: "Prune now"
+  # Empty this string to stop asking for confirmation.
+  prune_confirm: "Apply the retention rules from config.yaml now? Old days are compressed or deleted."
+  # {deleted} and {compressed} are counts of days.
+  pruned: "Pruned: {deleted} days deleted, {compressed} compressed."
+  # {days} {used} {max} {gzip} come from config.yaml's logs section.
+  settings_line: "Keeping {days} days, up to {max} (now {used}). Days older than {gzip} are compressed."
+  encrypted: "Encrypted on disk."
+  not_encrypted: "Not encrypted on disk."
+  dropped: "{count} entries dropped under load since start."
+  empty: "Nothing has been logged yet."
+  no_matches: "Nothing matches."
+  entries: "entries: {count}"
+  matches: "matches: {count}"
+  errors: "errors: {count}"
+  compressed: "compressed"
+  download_button: "Download"
+  delete_button: "Delete day"
+  # {date} is the day. Empty this string to stop asking for confirmation.
+  delete_confirm: "Delete every entry from {date}? This cannot be undone."
+  load_more: "Load more"
+  table_time: "Time"
+  table_kind: "Kind"
+  table_user: "Who"
+  table_what: "What"
+  table_ip: "IP"
+  anonymous: "signed out"
+  via_key: "(API key)"
+
+# The Jobs screen (owner only; static/js/jobs.js). A job you add can have a
+# name here, as job_<name> with dashes as underscores; one without shows its
+# own name.
+jobs:
+  empty: "No background jobs."
+  heading: "Jobs"
+  description: "What this app does by itself in the background, and how each job went last. Only you, the owner, can see this."
+  table_name: "Job"
+  table_status: "Status"
+  table_last: "Last run"
+  table_next: "Next run"
+  table_note: "Result"
+  table_actions: "Actions"
+  status_running: "Running"
+  status_ok: "OK"
+  status_failed: "Failed"
+  status_interrupted: "Interrupted"
+  status_never: "Not run yet"
+  never: "Never"
+  run_button: "Run now"
+  job_purge: "Clear out expired records"
+  job_prune_logs: "Apply log retention"
+  job_backup: "Scheduled backup"
+  job_webhooks: "Send webhooks"
+  job_files: "Clear out deleted and abandoned files"
+
+# The Webhooks screen (owner only; static/js/webhooks.js). {name} is the
+# endpoint's name. Event names are shown as they are: they are what the
+# receiver sees.
+webhooks:
+  empty: "No webhooks yet."
+  deliveries_empty: "Nothing sent yet."
+  heading: "Webhooks"
+  description: "Tell other systems when something happens here. Each event is signed and sent to the address you give it, and retried for a while if it does not arrive. Only you, the owner, can see this."
+  name_label: "Name"
+  name_placeholder: "Team chat"
+  url_label: "Address"
+  url_placeholder: "https://example.com/hooks/in"
+  events_label: "Send these events"
+  all_events: "Everything"
+  create_button: "Add webhook"
+  secret_notice: "This is the signing secret. Copy it now: it will not be shown again."
+  copy_button: "Copy"
+  table_name: "Name"
+  table_url: "Address"
+  table_status: "Status"
+  table_actions: "Actions"
+  status_on: "On"
+  status_off: "Off"
+  enable_button: "Turn on"
+  disable_button: "Turn off"
+  test_button: "Send test"
+  test_sent: "Test event queued."
+  edit_button: "Edit"
+  edit_heading: "Edit {name}"
+  edit_url_help: "Deliveries still waiting will go to the new address."
+  rotate_button: "New secret"
+  rotate_confirm: "Replace the signing secret for {name}? The old one stops working at once and cannot be brought back. Until the receiver has the new one it may refuse deliveries, which are retried for about fifteen hours."
+  rotated_notice: "New signing secret for {name}. Copy it now: it will not be shown again. The old one has stopped working."
+  resend_button: "Resend"
+  resent: "Queued to send again."
+  deliveries_button: "Deliveries"
+  delete_button: "Delete"
+  deliveries_heading: "Recent deliveries to {name}"
+  table_event: "Event"
+  table_delivery: "Delivery"
+  table_attempts: "Attempts"
+  table_result: "Last result"
+  table_when: "Queued"
+  delivery_delivered: "Delivered"
+  delivery_failed: "Failed"
+  delivery_pending: "Waiting"
+
+# The Settings screen (owner only; static/js/settings.js): config.yaml, one
+# field per setting. Placeholders in {braces} are filled in by the page. The
+# help text under each field is the comment above that key in
+# config/defaults.yaml, not something set here.
+settings:
+  heading: "Settings"
+  description: "This is config.yaml, the file that configures this app. Saving writes only what you changed into the file, keeping its comments. Each setting says when a change takes effect. The file can also be edited by hand: the server notices within a few seconds."
+  file: "{file}"
+  secret_note: "The secret key is in {path}. It is never shown here; back it up with the database."
+  apply_live: "Live"
+  apply_live_help: "Takes effect as soon as it is saved."
+  apply_restart: "Restart"
+  apply_restart_help: "Saved now; takes effect when the server restarts."
+  apply_scripts: "Scripts"
+  apply_scripts_help: "Read by docker/run.sh or scripts/build.sh the next time they run."
+  # {running} is the value the server started with.
+  pending_restart: "Saved. The server keeps running with {running} until it restarts."
+  default: "Default: {value}"
+  empty: "(empty)"
+  list_help: "One per line."
+  locked: "Fixed inside the container. Change it in config/config.yaml on the host."
+  save_button: "Save changes"
+  reload_button: "Reload from file"
+  # Empty this string to stop asking for confirmation.
+  reload_confirm: "Reload and lose the changes you have not saved?"
+  unsaved: "{count} unsaved"
+  saved: "Saved."
+  saved_restart: "Saved. Some changes take effect when the server restarts."
+  changed_on_disk: "config.yaml was changed while you were editing (by hand, or in another tab), so nothing was saved. Reload from file to see it."
+  # {error} says what is wrong with it.
+  invalid_file: "config.yaml does not validate, so the server is running on the last good version. {error}"
+  read_only: "The server cannot write config.yaml, so it can only be changed by editing the file by hand."
+  stale: "config.yaml was replaced on the host since this container started. Restart the container to see and change the new version."
+
+# The page a browser gets when a page load fails (404, 429, 500 and so on).
+# The server renders this, so it works when the app itself cannot load. "other"
+# is any status without its own pair. {reference} is what finds a 5xx in the
+# Logs screen's search.
+error_page:
+  home: "Back to the app"
+  not_found_title: "Page not found"
+  not_found_message: "This page does not exist, or the link is out of date."
+  method_not_allowed_title: "That is not possible here"
+  method_not_allowed_message: "This address does not work that way."
+  rate_limited_title: "Too many requests"
+  rate_limited_message: "Please wait a minute, then try again."
+  server_error_title: "Something went wrong"
+  server_error_message: "This is a problem on the server, not with anything you did. Please try again."
+  maintenance_title: "Down for maintenance"
+  maintenance_message: "This app is being worked on and will be back shortly. Please try again in a few minutes."
+  other_title: "That did not work"
+  other_message: "The server could not answer this request."
+  reference: "Reference: {reference}"
+
+# The banner across the top of the app while server.maintenance is on.
+maintenance:
+  read_only_banner: "Maintenance mode: this app is read-only for now. Changes are refused."
+  full_banner: "Maintenance mode: only you can reach this app right now. Turn it off in Settings."
+
+install:
+  heading: "Add iPB to your Home Screen"
+  prepare_text: "Notifications on iPhone only work once iPB is on your Home Screen."
+  prepare_button: "Get started"
+  step_share: "Tap the Share button in Safari."
+  step_add: "Tap Add to Home Screen, then Add."
+  step_open: "Open iPB from its new icon on your Home Screen."
+
+inbox:
+  heading: "Inbox"
+  read_all: "Mark all read"
+  filter_label: "Show messages from"
+  filter_all: "All apps"
+  empty: "No messages yet."
+  delete_label: "Delete this message"
+
+apps:
+  heading: "Apps"
+  description: "Each app has its own token, for scripts to send with. Turn off Notify to keep an app's messages in your inbox without any push."
+  name_label: "App name"
+  name_placeholder: "Doorbell"
+  create_button: "Add app"
+  empty: "No apps yet."
+  token_notice: "This is the token for {name}. It is only shown now, so copy it."
+  example_label: "This sends a message to you. For someone else or a group, change the user value to their key:"
+  notify_label: "Notify"
+  icon_button: "Icon"
+  sound_button: "Sound"
+  sound_play: "Play"
+  sound_failed: "That sound could not be played."
+  rotate_button: "New token"
+  rotate_confirm: "Make a new token for {name}? The old one stops working at once."
+  delete_button: "Delete"
+
+groups:
+  heading: "Groups"
+  description: "A group's key sends to everyone in it at once."
+  create_button: "New group"
+  create_heading: "New group"
+  edit_heading: "Edit group"
+  name_label: "Group name"
+  members_label: "Members"
+  no_members: "No members yet"
+  empty: "You are not in any groups."
+  edit_button: "Edit"
+  rotate_button: "New key"
+  rotate_confirm: "Make a new key for {name}? The old one stops working at once."
+  delete_button: "Delete"
+  leave_button: "Leave"
+  leave_confirm: "Leave {name}?"
+
+notifications:
+  heading: "Notifications"
+  prompt_text: "Turn on notifications to get messages on this device."
+  enable_button: "Turn on notifications"
+  test_button: "Send a test notification"
+  test_body: "This is a test from iPB."
+  test_sent: "Sent. The push service answered: {results}"
+  test_no_devices: "This account has no devices yet."
+  status_on: "Notifications are on for this device."
+  status_off: "Notifications are off for this device."
+  status_denied: "Notifications are blocked. Turn them on for iPB in Settings, under Notifications."
+  status_install_first: "Open iPB from your Home Screen to turn on notifications."
+  status_unsupported: "This browser cannot get notifications."
+  key_heading: "Your user key"
+  key_description: "Scripts use this with an app's token to send to you. It cannot send anything by itself."
+  key_rotate: "Make a new key"
+  key_rotate_confirm: "Make a new user key? Scripts using the old one stop reaching you."
+  devices_heading: "Your devices"
+  devices_empty: "No devices yet."
+  device_name: "Device"
+  device_added: "Added"
+  device_unknown: "Unknown device"
+  device_remove: "Remove"
+  device_remove_confirm: "Remove this device? It stops getting notifications."
+  people_heading: "Everyone's user keys"
+  people_description: "For scripts that should reach a particular person."
+  people_empty: "Nobody yet."
+  people_name: "Name"
+
+errors:
+  generic: "Something went wrong. Please try again."
+  # {reference} finds this failure in the Logs screen's search.
+  reference: "Something went wrong on the server. Reference: {reference}"
+  network: "Could not reach the server."
+  delivery_not_failed: "That delivery has not failed, so there is nothing to resend."
+  # Error codes the invite link and PIN routes answer with, by name.
+  invite_link_invalid: "This invite link is invalid, expired, or has been switched off."
+  invite_link_full: "This link has no places left."
+  no_such_account: "That account cannot sign in through this link."
+  pin_needed: "Enter the PIN."
+  pin_wrong: "That PIN is not right."
+  pin_locked: "Too many wrong PINs. Try again in 15 minutes."
+  bad_pin: "A PIN is 4 to 8 digits."
+  # And the ones password and two-factor sign-in answer with.
+  invalid_login: "That username or password is not right."
+  login_locked: "Too many wrong tries. Try again in 15 minutes."
+  use_password: "This account has a password. Open the home page and sign in with it."
+  username_taken: "That username is taken."
+  bad_username: "A username is 3 to 32 letters, digits, dots, dashes or underscores."
+  bad_digest: "That password could not be processed."
+  password_blocked: "The owner has blocked passwords for this account."
+  password_too_short: "A password is at least 12 characters."
+  password_mismatch: "Those two passwords are not the same."
+  insecure_context: "Password sign-in needs HTTPS. Your password was not sent."
+  two_factor_wrong: "That code is not right."
+  two_factor_locked: "Too many wrong codes. Try again in 15 minutes."
+  two_factor_on: "Two-factor sign-in is already on."
+  two_factor_off: "Two-factor sign-in is not on."
+  challenge_invalid: "That sign-in has expired. Start again."
+  logs_today: "Today's log is still being written, so it cannot be deleted."
+  # What an upload answers with.
+  file_too_large: "That file is over the size limit."
+  file_quota: "That would go over your storage limit."
+  upload_lost: "That upload was lost, so it has to start again."
+  # The Settings screen's save, by code.
+  settings_changed: "config.yaml was changed while you were editing. Reload from file to see it."
+  settings_stale: "config.yaml was replaced on the host. Restart the container first."
+  settings_read_only: "The server cannot write config.yaml."
+  settings_locked: "That setting cannot be changed from inside the container."
+  invalid_settings: "That value is not allowed."
+  unknown_setting: "There is no such setting."
+  settings_hand_edit: "config.yaml is written in a way this screen cannot change. Edit the file by hand."

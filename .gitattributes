@@ -1,0 +1,4 @@
+# Line endings the scripts need whatever core.autocrlf says: bash chokes on
+# CRLF, and cmd.exe misreads labels in a batch file with LF.
+*.sh  text eol=lf
+*.bat text eol=crlf

@@ -1,0 +1,421 @@
+[
+ {
+  "name": "plain int keeps trailing comment",
+  "input": "server:\n  port: 8080   # the port\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 9090
+   }
+  ],
+  "output": "server:\n  port: 9090   # the port\n"
+ },
+ {
+  "name": "bool",
+  "input": "logs:\n  echo: true\n",
+  "edits": [
+   {
+    "path": "logs.echo",
+    "value": false
+   }
+  ],
+  "output": "logs:\n  echo: false\n"
+ },
+ {
+  "name": "double quoted stays double",
+  "input": "server:\n  public_url: \"\"\n",
+  "edits": [
+   {
+    "path": "server.public_url",
+    "value": "https://app.example.com"
+   }
+  ],
+  "output": "server:\n  public_url: \"https://app.example.com\"\n"
+ },
+ {
+  "name": "single quoted stays single",
+  "input": "app:\n  name: 'My App'  # shown\n",
+  "edits": [
+   {
+    "path": "app.name",
+    "value": "Bob's App"
+   }
+  ],
+  "output": "app:\n  name: 'Bob''s App'  # shown\n"
+ },
+ {
+  "name": "plain stays plain when safe",
+  "input": "server:\n  host: 127.0.0.1\n",
+  "edits": [
+   {
+    "path": "server.host",
+    "value": "0.0.0.0"
+   }
+  ],
+  "output": "server:\n  host: 0.0.0.0\n"
+ },
+ {
+  "name": "plain quoted when it would read as a bool",
+  "input": "server:\n  host: 127.0.0.1\n",
+  "edits": [
+   {
+    "path": "server.host",
+    "value": "yes"
+   }
+  ],
+  "output": "server:\n  host: \"yes\"\n"
+ },
+ {
+  "name": "plain quoted when it would read as a number",
+  "input": "docker:\n  cpus: \"1\"\n  memory: 256m\n",
+  "edits": [
+   {
+    "path": "docker.memory",
+    "value": "1.5"
+   }
+  ],
+  "output": "docker:\n  cpus: \"1\"\n  memory: \"1.5\"\n"
+ },
+ {
+  "name": "plain quoted when it has a colon",
+  "input": "server:\n  proxy_header: X-Forwarded-For\n",
+  "edits": [
+   {
+    "path": "server.proxy_header",
+    "value": "a: b"
+   }
+  ],
+  "output": "server:\n  proxy_header: \"a: b\"\n"
+ },
+ {
+  "name": "escapes in double quotes",
+  "input": "app:\n  name: \"x\"\n",
+  "edits": [
+   {
+    "path": "app.name",
+    "value": "say \"hi\"\\now"
+   }
+  ],
+  "output": "app:\n  name: \"say \\\"hi\\\"\\\\now\"\n"
+ },
+ {
+  "name": "empty value",
+  "input": "server:\n  public_url:\n  port: 1\n",
+  "edits": [
+   {
+    "path": "server.public_url",
+    "value": "https://x.example.com"
+   }
+  ],
+  "output": "server:\n  public_url: \"https://x.example.com\"\n  port: 1\n"
+ },
+ {
+  "name": "empty value keeps its comment",
+  "input": "server:\n  public_url:   # set me\n",
+  "edits": [
+   {
+    "path": "server.public_url",
+    "value": "app"
+   }
+  ],
+  "output": "server:\n  public_url: app   # set me\n"
+ },
+ {
+  "name": "flow list",
+  "input": "server:\n  trusted_proxies: []  # none yet\n",
+  "edits": [
+   {
+    "path": "server.trusted_proxies",
+    "value": [
+     "127.0.0.1",
+     "::1"
+    ]
+   }
+  ],
+  "output": "server:\n  trusted_proxies: [127.0.0.1, \"::1\"]  # none yet\n"
+ },
+ {
+  "name": "flow list emptied",
+  "input": "server:\n  trusted_proxies: [10.0.0.0/8, \"::1\"]\n",
+  "edits": [
+   {
+    "path": "server.trusted_proxies",
+    "value": []
+   }
+  ],
+  "output": "server:\n  trusted_proxies: []\n"
+ },
+ {
+  "name": "block list indented",
+  "input": "build:\n  targets:\n    - linux/amd64\n    # one more\n    - darwin/arm64\n  output_dir: dist\n",
+  "edits": [
+   {
+    "path": "build.targets",
+    "value": [
+     "windows/amd64",
+     "linux/arm"
+    ]
+   }
+  ],
+  "output": "build:\n  targets:\n    - windows/amd64\n    - linux/arm\n  output_dir: dist\n"
+ },
+ {
+  "name": "block list at key indentation emptied",
+  "input": "build:\n  targets:\n  - linux/amd64\n  - darwin/arm64\n  output_dir: dist\n",
+  "edits": [
+   {
+    "path": "build.targets",
+    "value": []
+   }
+  ],
+  "output": "build:\n  targets: []\n  output_dir: dist\n"
+ },
+ {
+  "name": "empty value becomes a flow list",
+  "input": "server:\n  trusted_proxies:\n  port: 1\n",
+  "edits": [
+   {
+    "path": "server.trusted_proxies",
+    "value": [
+     "10.0.0.0/8"
+    ]
+   }
+  ],
+  "output": "server:\n  trusted_proxies: [10.0.0.0/8]\n  port: 1\n"
+ },
+ {
+  "name": "missing key goes at the end of its section",
+  "input": "server:\n  port: 8080\n  # trailing note\n\n# about auth\nauth:\n  api_keys: true\n",
+  "edits": [
+   {
+    "path": "server.host",
+    "value": "0.0.0.0"
+   },
+   {
+    "path": "server.mcp",
+    "value": false
+   }
+  ],
+  "output": "server:\n  port: 8080\n  host: 0.0.0.0\n  mcp: false\n  # trailing note\n\n# about auth\nauth:\n  api_keys: true\n"
+ },
+ {
+  "name": "missing key uses the section's indentation",
+  "input": "server:\n    port: 8080\n",
+  "edits": [
+   {
+    "path": "server.host",
+    "value": "::"
+   }
+  ],
+  "output": "server:\n    port: 8080\n    host: \"::\"\n"
+ },
+ {
+  "name": "null section",
+  "input": "server:\nauth:\n  api_keys: true\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 1
+   }
+  ],
+  "output": "server:\n  port: 1\nauth:\n  api_keys: true\n"
+ },
+ {
+  "name": "explicit null section",
+  "input": "server: ~\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 1
+   }
+  ],
+  "output": "server:\n  port: 1\n"
+ },
+ {
+  "name": "missing section, no trailing newline",
+  "input": "server:\n  port: 8080",
+  "edits": [
+   {
+    "path": "logs.echo",
+    "value": false
+   },
+   {
+    "path": "logs.ui_clicks",
+    "value": true
+   }
+  ],
+  "output": "server:\n  port: 8080\n\nlogs:\n  echo: false\n  ui_clicks: true\n"
+ },
+ {
+  "name": "empty file",
+  "input": "",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 5
+   }
+  ],
+  "output": "server:\n  port: 5\n"
+ },
+ {
+  "name": "comments only",
+  "input": "# nothing set\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 5
+   }
+  ],
+  "output": "# nothing set\n\nserver:\n  port: 5\n"
+ },
+ {
+  "name": "CRLF kept",
+  "input": "server:\r\n  port: 8080\r\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 1
+   },
+   {
+    "path": "server.host",
+    "value": "x"
+   }
+  ],
+  "output": "server:\r\n  port: 1\r\n  host: x\r\n"
+ },
+ {
+  "name": "BOM kept",
+  "input": "﻿server:\n  port: 8080\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 1
+   }
+  ],
+  "output": "﻿server:\n  port: 1\n"
+ },
+ {
+  "name": "multibyte text before and after",
+  "input": "app:\n  name: \"Café\"  # été\nserver:\n  port: 1\n",
+  "edits": [
+   {
+    "path": "app.name",
+    "value": "Naïve"
+   },
+   {
+    "path": "server.port",
+    "value": 2
+   }
+  ],
+  "output": "app:\n  name: \"Naïve\"  # été\nserver:\n  port: 2\n"
+ },
+ {
+  "name": "several edits on neighbouring lines",
+  "input": "server:\n  host: a\n  port: 1\n  public_url: \"\"\n",
+  "edits": [
+   {
+    "path": "server.host",
+    "value": "b"
+   },
+   {
+    "path": "server.port",
+    "value": 2
+   },
+   {
+    "path": "server.public_url",
+    "value": "c"
+   }
+  ],
+  "output": "server:\n  host: b\n  port: 2\n  public_url: \"c\"\n"
+ },
+ {
+  "name": "delete the legacy secret key and its comment",
+  "input": "server:\n  # Encrypts session cookies and, with encrypt_at_rest, every database value.\n  # 64 hex characters. Generated when this file is created.\n  secret_key: \"abc\"\n  encrypt_at_rest: true\n",
+  "deletes": [
+   "server.secret_key"
+  ],
+  "output": "server:\n  # The secret key moved to secret.key, beside this file. Back the two up\n  # together with the app directory: nothing else can read the database.\n  encrypt_at_rest: true\n"
+ },
+ {
+  "name": "delete keeps an unrelated comment",
+  "input": "server:\n  # cookie things\n  secure_cookies: true\n  secret_key: abc\n",
+  "deletes": [
+   "server.secret_key"
+  ],
+  "output": "server:\n  # cookie things\n  secure_cookies: true\n  # The secret key moved to secret.key, beside this file. Back the two up\n  # together with the app directory: nothing else can read the database.\n"
+ },
+ {
+  "name": "delete of a missing key does nothing",
+  "input": "server:\n  port: 1\n",
+  "deletes": [
+   "server.secret_key"
+  ],
+  "output": "server:\n  port: 1\n"
+ },
+ {
+  "name": "refuses an alias",
+  "input": "server:\n  host: &h 1.2.3.4\n",
+  "edits": [
+   {
+    "path": "server.host",
+    "value": "x"
+   }
+  ],
+  "error": true
+ },
+ {
+  "name": "refuses a block scalar",
+  "input": "app:\n  name: |\n    x\n",
+  "edits": [
+   {
+    "path": "app.name",
+    "value": "y"
+   }
+  ],
+  "error": true
+ },
+ {
+  "name": "refuses a flow mapping section",
+  "input": "server: {port: 1}\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 2
+   }
+  ],
+  "error": true
+ },
+ {
+  "name": "refuses a value spread over lines",
+  "input": "app:\n  name: one\n    two\n",
+  "edits": [
+   {
+    "path": "app.name",
+    "value": "y"
+   }
+  ],
+  "error": true
+ },
+ {
+  "name": "refuses a tagged value",
+  "input": "server:\n  port: !!int 1\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 2
+   }
+  ],
+  "error": true
+ },
+ {
+  "name": "refuses invalid YAML",
+  "input": "server: [\n",
+  "edits": [
+   {
+    "path": "server.port",
+    "value": 2
+   }
+  ],
+  "error": true
+ }
+]
